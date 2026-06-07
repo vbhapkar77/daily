@@ -38,6 +38,8 @@
 		<!-- JaCoCo 0.8.14+ required for JDK 25 class file support (major version 69) -->
 		<jacoco.version>0.8.14</jacoco.version>
 		<spotless.version>2.43.0</spotless.version>
+		<!-- JWT library (added in S001 T-001 for auth feature) -->
+		<jjwt.version>0.12.6</jjwt.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -74,6 +76,30 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>${springdoc.version}</version>
+		</dependency>
+
+		<!--
+		  JJWT — JWT creation and validation (S001 T-001).
+		  Split into api/impl/jackson: app code depends on api (the stable interface);
+		  impl and jackson are runtime-only so they aren't on the compile classpath.
+		  See docs/learnings/java/maven-dependencies.md for the BOM/api-impl pattern explanation.
+		-->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>${jjwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>${jjwt.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>${jjwt.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>

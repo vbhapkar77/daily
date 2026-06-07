@@ -108,4 +108,6 @@ Do **not** write a note when:
 
 ## Index of current notes
 
-> *(This list grows as Vishal writes notes. Nothing here yet — first notes will land once we start actual implementation.)*
+### Java
+
+- [Maven dependencies — scopes, BOMs, the api/impl split](java/maven-dependencies.md) *(S001 T-001)*

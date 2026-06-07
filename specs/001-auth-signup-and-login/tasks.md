@@ -24,12 +24,13 @@
 
 These can ship in this order without breaking anything; the temporary permissive `SecurityConfig` keeps the empty backend responsive until T-018.
 
-- [ ] **T-001** Add JJWT dependencies to `pom.xml`
+- [x] **T-001** Add JJWT dependencies to `pom.xml` ✓ merged in PR #1
   - File(s): `backend/pom.xml`
   - Add `jjwt-api`, `jjwt-impl`, `jjwt-jackson` (0.12.x)
   - (No Caffeine — per OQ-1, we went DB-backed for rate limiting)
   - Verify `./mvnw -B -q dependency:resolve` succeeds
   - Estimate: 20 min
+  - 📝 Learning note: [docs/learnings/java/maven-dependencies.md](../../docs/learnings/java/maven-dependencies.md)
 
 - [ ] **T-002** Flyway migration V2 — users + password_reset_tokens + rate_limit_events
   - File: `backend/src/main/resources/db/migration/V2__create_users_and_password_reset_tokens.sql`
@@ -292,6 +293,6 @@ These have no service-layer dependencies. Pure functions, easy to unit-test to 1
 ## Status summary (auto-updated)
 
 - **Total tasks:** 40 (was 39; added T-004b for RateLimitEvent repo)
-- **Completed:** 0
+- **Completed:** 1 (T-001)
 - **In progress:** 0
 - **Estimated total effort:** ~35 hours
