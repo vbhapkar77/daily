@@ -1,19 +1,19 @@
 # Backend CI — lint (Spotless), compile, unit + integration tests, JaCoCo coverage.
 # Per ADR-0007 testing strategy and ADR-0011 Java version.
-# Path filter (per ADR-0006) means this only runs when backend files change.
+#
+# NOTE on path filtering: branch protection requires this workflow's `build / test`
+# job. GitHub's "required check" + paths-filter combination creates unmergeable PRs
+# when a PR doesn't touch backend files. So we removed paths and now run on every PR.
+# Backend build is ~45s, acceptable cost for guaranteed mergeability. If this becomes
+# expensive later, migrate to the aggregator-workflow pattern.
 
 name: backend
 
 on:
   push:
     branches: [main]
-    paths:
-      - 'backend/**'
-      - '.github/workflows/backend.yml'
   pull_request:
-    paths:
-      - 'backend/**'
-      - '.github/workflows/backend.yml'
+    branches: [main]
 
 # Cancel in-flight runs for the same branch when a new commit lands.
 concurrency:
