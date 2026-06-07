@@ -51,7 +51,7 @@ jobs:
       # Java needs a real build for CodeQL to analyze. JS/TS doesn't.
       - name: Set up JDK 25
         if: matrix.language == 'java-kotlin'
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '25'
