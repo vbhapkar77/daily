@@ -1,0 +1,61 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE / editor
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+.cursor/
+.aider*
+
+# Env files (NEVER commit secrets)
+.env
+.env.local
+.env.*.local
+*.env.local
+
+# Backend (Java / Maven)
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+backend/HELP.md
+backend/!.mvn/wrapper/MavenWrapperDownloader.java
+backend/build/
+backend/out/
+
+# Frontend (Node / Next.js)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.pnpm-store/
+frontend/coverage/
+frontend/.turbo/
+frontend/.cache/
+frontend/playwright-report/
+frontend/test-results/
+frontend/blob-report/
+frontend/playwright/.cache/
+
+# Generated API client (regenerated from OpenAPI on each build)
+frontend/lib/api-types.ts
+
+# Vercel
+.vercel/
+
+# Docker
+infra/.docker-data/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Misc
+*.tsbuildinfo
+next-env.d.ts
