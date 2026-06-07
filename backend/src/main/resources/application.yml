@@ -70,6 +70,9 @@ app:
     secret: ${JWT_SECRET:please-override-this-in-env-it-is-not-secure-for-prod-12345}
     ttl: P30D   # 30 days, ISO 8601 duration
   base-url: ${APP_BASE_URL:http://localhost:3000}
+  cors:
+    # Comma-separated. Override in production via CORS_ALLOWED_ORIGINS env var.
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
   email:
     # If empty in dev, password-reset emails are logged instead of sent
     resend-api-key: ${RESEND_API_KEY:}

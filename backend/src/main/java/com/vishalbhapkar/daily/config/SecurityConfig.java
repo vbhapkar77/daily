@@ -1,6 +1,8 @@
 package com.vishalbhapkar.daily.config;
 
+import java.util.Arrays;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,11 +23,18 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  *   <li>Permits all requests (no auth required)
  *   <li>Disables CSRF (we're stateless; will be re-evaluated with the real auth design)
  *   <li>Disables HTTP Basic + form login defaults
- *   <li>Enables CORS for localhost:3000 (Next.js dev server)
+ *   <li>Enables CORS for origins listed in {@code app.cors.allowed-origins}
  * </ul>
  */
 @Configuration
 public class SecurityConfig {
+
+    /**
+     * Comma-separated list of allowed origins. Driven by env var so we don't hardcode
+     * the production Vercel URL. Default covers local dev.
+     */
+    @Value("${app.cors.allowed-origins:http://localhost:3000}")
+    private String allowedOrigins;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -37,14 +46,15 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * CORS for local development. Production CORS will be tightened in the auth feature
-     * to allow only the deployed frontend origin (e.g. https://daily.vercel.app).
-     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        List<String> origins = Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("http://localhost:3000"));
+        cfg.setAllowedOrigins(origins);
         cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));
         cfg.setAllowCredentials(true);
