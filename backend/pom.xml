@@ -34,7 +34,7 @@
 	<properties>
 		<!-- Source/target level. Runtime JDK is 25 (LTS); see ADR-0011. -->
 		<java.version>21</java.version>
-		<springdoc.version>2.6.0</springdoc.version>
+		<springdoc.version>3.0.3</springdoc.version>
 		<!-- JaCoCo 0.8.14+ required for JDK 25 class file support (major version 69) -->
 		<jacoco.version>0.8.14</jacoco.version>
 		<spotless.version>2.43.0</spotless.version>
