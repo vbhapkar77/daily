@@ -111,3 +111,7 @@ Do **not** write a note when:
 ### Java
 
 - [Maven dependencies — scopes, BOMs, the api/impl split](java/maven-dependencies.md) *(S001 T-001)*
+
+### Infrastructure
+
+- [GitHub Actions: required checks vs. paths-filtered workflows](infrastructure/github-actions-required-checks.md) *(PR #2 — classic CI/CD interview topic)*
