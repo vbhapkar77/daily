@@ -1,0 +1,15 @@
+# CODEOWNERS — required reviewers per file pattern.
+# Docs: https://docs.github.com/en/repositories/managing-your-repositories-settings-and-features/customizing-your-repository/about-code-owners
+#
+# When a PR touches a matching path, GitHub auto-requests review from the listed owners.
+# Combined with "Require review from Code Owners" in branch protection, owners must approve
+# before the PR can be merged.
+#
+# Currently a single owner (the only developer). When the project grows, split ownership
+# per directory:
+#   /backend/   @backend-team
+#   /frontend/  @frontend-team
+#   /docs/      @vbhapkar77 @product-lead
+
+# Catch-all: any change requires Vishal's review
+*  @vbhapkar77
