@@ -2,7 +2,16 @@
 
 > A personal daily check-in app for habits, with built-in capture for things you don't want to forget.
 
-Status: **🟡 Phase 1 → Phase 2** (architecture locked; repo scaffold next)
+[![backend](https://github.com/vbhapkar77/daily/actions/workflows/backend.yml/badge.svg)](https://github.com/vbhapkar77/daily/actions/workflows/backend.yml)
+[![frontend](https://github.com/vbhapkar77/daily/actions/workflows/frontend.yml/badge.svg)](https://github.com/vbhapkar77/daily/actions/workflows/frontend.yml)
+[![docs](https://github.com/vbhapkar77/daily/actions/workflows/docs.yml/badge.svg)](https://github.com/vbhapkar77/daily/actions/workflows/docs.yml)
+[![codeql](https://github.com/vbhapkar77/daily/actions/workflows/codeql.yml/badge.svg)](https://github.com/vbhapkar77/daily/actions/workflows/codeql.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![changelog](https://img.shields.io/badge/changelog-keep%20a%20changelog-orange.svg)](CHANGELOG.md)
+
+🟢 **Live:** [daily-seven-olive.vercel.app](https://daily-seven-olive.vercel.app)
+🔌 **API:** [daily-api-nteb.onrender.com/swagger-ui/index.html](https://daily-api-nteb.onrender.com/swagger-ui/index.html)
+📋 **Status:** Phase 2.5 done — cloud-deployed empty stack. Phase 3 (feature 001 — auth) in progress.
 
 ---
 

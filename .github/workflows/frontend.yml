@@ -1,19 +1,16 @@
 # Frontend CI — lint, typecheck, build.
 # Tests (Vitest, Playwright) will be added when we start writing them.
-# Per ADR-0006 (path filter) and ADR-0007 (testing strategy).
+#
+# NOTE on path filtering: see comment in backend.yml. Runs on every PR to avoid
+# branch-protection unmergeability when frontend files aren't touched.
 
 name: frontend
 
 on:
   push:
     branches: [main]
-    paths:
-      - 'frontend/**'
-      - '.github/workflows/frontend.yml'
   pull_request:
-    paths:
-      - 'frontend/**'
-      - '.github/workflows/frontend.yml'
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

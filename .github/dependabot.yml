@@ -1,0 +1,91 @@
+# Dependabot config — automated dependency update PRs.
+# Docs: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+#
+# Three ecosystems matched to our monorepo layout:
+#   - maven         → backend/pom.xml
+#   - npm           → frontend/package.json
+#   - github-actions → .github/workflows/*.yml
+#
+# All three run weekly so PRs trickle in at a manageable pace.
+# Dependabot opens PRs that go through the same CI as any human PR.
+
+version: 2
+
+updates:
+  # --- Backend (Spring Boot, Maven) ---
+  - package-ecosystem: maven
+    directory: /backend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Asia/Kolkata
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore(deps)
+      include: scope
+    labels:
+      - dependencies
+      - backend
+    groups:
+      # Group all Spring updates into one PR — they tend to release together
+      spring:
+        patterns:
+          - "org.springframework*"
+          - "org.springframework.boot*"
+      # Group all JJWT artifacts together (api/impl/jackson always move in lockstep)
+      jjwt:
+        patterns:
+          - "io.jsonwebtoken:*"
+      # Group all Testcontainers artifacts
+      testcontainers:
+        patterns:
+          - "org.testcontainers:*"
+
+  # --- Frontend (Next.js, pnpm) ---
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Asia/Kolkata
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore(deps)
+      include: scope
+    labels:
+      - dependencies
+      - frontend
+    groups:
+      # Group React + React-DOM (always move together)
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      # Group all Next.js packages
+      next:
+        patterns:
+          - "next"
+          - "eslint-config-next"
+      # Group all Tailwind packages
+      tailwind:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
+
+  # --- GitHub Actions themselves ---
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore(ci)
+      include: scope
+    labels:
+      - dependencies
+      - ci

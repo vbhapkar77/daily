@@ -1,0 +1,11 @@
+# Disable blank issues — every issue must use one of the templates.
+# Adds a "contact link" to point folks at the docs first.
+blank_issues_enabled: false
+
+contact_links:
+  - name: Documentation
+    url: https://github.com/vbhapkar77/daily/blob/main/docs/README.md
+    about: Read the project docs (PRD, architecture, ADRs, learnings) first
+  - name: Security vulnerability
+    url: https://github.com/vbhapkar77/daily/security/advisories/new
+    about: Privately report a security vulnerability (see SECURITY.md)

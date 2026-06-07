@@ -1,0 +1,68 @@
+# CodeQL static analysis — GitHub's free SAST (Static Application Security Testing).
+# Catches common security bugs: SQL injection, XSS, path traversal, hardcoded secrets,
+# unsafe deserialization, etc. Industry-standard quality gate; free for public repos.
+#
+# Runs:
+#   - On every push to main (catches regressions)
+#   - On every PR (catches issues before merge)
+#   - Weekly on a schedule (catches new CVE rules added since last run)
+#
+# Findings appear under the Security tab on GitHub.
+
+name: codeql
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '21 6 * * 1'   # Monday 06:21 UTC (Kolkata 11:51 — early morning, low contention)
+
+jobs:
+  analyze:
+    name: analyze ${{ matrix.language }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # 'java-kotlin' analyzes our Java backend; 'javascript-typescript' the frontend
+        include:
+          - language: java-kotlin
+            build-mode: manual
+          - language: javascript-typescript
+            build-mode: none
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          queries: security-and-quality   # broader ruleset than the default "security-extended"
+
+      # Java needs a real build for CodeQL to analyze. JS/TS doesn't.
+      - name: Set up JDK 25
+        if: matrix.language == 'java-kotlin'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Build backend (for CodeQL)
+        if: matrix.language == 'java-kotlin'
+        working-directory: backend
+        run: ./mvnw -B -q -DskipTests package
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: /language:${{ matrix.language }}

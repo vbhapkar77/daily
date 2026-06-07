@@ -1,0 +1,46 @@
+# Enforces Conventional Commits format on PR titles.
+# When a PR title doesn't match, this check fails and the PR can't be merged
+# (assuming branch protection requires this check to pass).
+#
+# Allowed types are listed below — matches what PULL_REQUEST_TEMPLATE.md documents.
+# Action: https://github.com/amannn/action-semantic-pull-request
+
+name: pr-title
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  lint:
+    name: validate PR title
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check title format
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+            revert
+            spec
+          # Scope is optional but if present must be lowercase letters/dashes/digits
+          requireScope: false
+          subjectPattern: ^(?![A-Z]).+$
+          subjectPatternError: |
+            The subject "{subject}" should start with a lowercase letter.
+            Example titles:
+              feat(auth): add signup endpoint
+              fix(security): close CORS leak on /api/v1/admin
+              docs(prd): add user story US-17
+              spec(002): approve habits feature spec

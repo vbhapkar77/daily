@@ -1,19 +1,17 @@
 # Docs CI — lint the OpenAPI spec with Spectral.
 # Per ADR-0010, our OpenAPI YAML is the source of truth for the API contract;
 # this enforces consistency and prevents common errors.
+#
+# NOTE on path filtering: see comment in backend.yml. Runs on every PR to avoid
+# branch-protection unmergeability when docs/api files aren't touched.
 
 name: docs
 
 on:
   push:
     branches: [main]
-    paths:
-      - 'docs/api/**'
-      - '.github/workflows/docs.yml'
   pull_request:
-    paths:
-      - 'docs/api/**'
-      - '.github/workflows/docs.yml'
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
