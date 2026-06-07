@@ -1,0 +1,21 @@
+# Production profile — talks to Neon Postgres via env-supplied JDBC URL
+# Activated automatically on Render (SPRING_PROFILES_ACTIVE=prod in env)
+
+spring:
+  datasource:
+    url: ${DATABASE_URL}                # full JDBC URL from Render env
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+
+  jpa:
+    show-sql: false
+
+logging:
+  level:
+    root: INFO
+    com.vishalbhapkar.daily: INFO
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n'

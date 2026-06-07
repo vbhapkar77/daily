@@ -1,0 +1,11 @@
+# Spectral linter config for our OpenAPI spec.
+# Extends the built-in OAS (OpenAPI Specification) ruleset.
+# Run locally: `npx @stoplight/spectral-cli lint docs/api/openapi.yaml`
+
+extends: ['spectral:oas']
+
+# Project-specific rule overrides go here as we develop opinions.
+# Example overrides:
+#   rules:
+#     operation-tag-defined: warn       # don't fail the build on this yet
+#     no-$ref-siblings: off

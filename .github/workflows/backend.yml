@@ -1,0 +1,70 @@
+# Backend CI — lint (Spotless), compile, unit + integration tests, JaCoCo coverage.
+# Per ADR-0007 testing strategy and ADR-0011 Java version.
+# Path filter (per ADR-0006) means this only runs when backend files change.
+
+name: backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend.yml'
+
+# Cancel in-flight runs for the same branch when a new commit lands.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build / test
+    runs-on: ubuntu-latest
+    # Docker is available on GitHub-hosted ubuntu runners — required for Testcontainers.
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Verify pom.xml is consistent
+        working-directory: backend
+        run: ./mvnw -B -q help:effective-pom -Doutput=/tmp/effective-pom.xml
+
+      # Spotless is temporarily disabled — see backend/pom.xml comment and
+      # docs/discussions/2026-06-07-spotless-jdk25.md. Re-enable when google-java-format
+      # or palantir-java-format ships JDK 25 compatibility.
+
+      - name: Compile
+        working-directory: backend
+        run: ./mvnw -B -q compile
+
+      - name: Tests + JaCoCo coverage
+        working-directory: backend
+        run: ./mvnw -B verify
+
+      - name: Upload JaCoCo coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-jacoco-report
+          path: backend/target/site/jacoco/
+          retention-days: 14
+
+      - name: Upload surefire test reports (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports
+          path: backend/target/surefire-reports/
+          retention-days: 7

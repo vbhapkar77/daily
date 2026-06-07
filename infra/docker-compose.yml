@@ -1,0 +1,36 @@
+# Local development stack (per ADR-0008).
+# Brings up a Postgres 16 container matching what Neon runs in production.
+#
+# Usage:
+#   docker compose -f infra/docker-compose.yml up -d postgres   # start
+#   docker compose -f infra/docker-compose.yml ps               # status
+#   docker compose -f infra/docker-compose.yml logs -f postgres # tail logs
+#   docker compose -f infra/docker-compose.yml down             # stop (keeps data)
+#   docker compose -f infra/docker-compose.yml down -v          # stop + WIPE data
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: daily-postgres
+    environment:
+      POSTGRES_USER: daily
+      POSTGRES_PASSWORD: daily
+      POSTGRES_DB: daily
+      # SET TIME ZONE for consistency with production
+      TZ: UTC
+      PGTZ: UTC
+    ports:
+      - "5432:5432"
+    volumes:
+      - daily-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U daily -d daily"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  daily-pgdata:
+    name: daily-pgdata

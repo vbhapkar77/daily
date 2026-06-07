@@ -1,0 +1,28 @@
+# Local dev profile — talks to Docker Postgres on localhost:5432
+# Activate with: -Dspring.profiles.active=local
+# Or via IntelliJ run config "Active profiles: local"
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/daily
+    username: daily
+    password: daily
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+
+  jpa:
+    show-sql: true   # noisy but useful in dev
+
+logging:
+  level:
+    root: INFO
+    com.vishalbhapkar.daily: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE  # show parameter values bound to prepared statements
+
+management:
+  endpoint:
+    health:
+      show-details: always  # in dev, show everything

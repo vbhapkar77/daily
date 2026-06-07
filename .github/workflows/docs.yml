@@ -1,0 +1,35 @@
+# Docs CI — lint the OpenAPI spec with Spectral.
+# Per ADR-0010, our OpenAPI YAML is the source of truth for the API contract;
+# this enforces consistency and prevents common errors.
+
+name: docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/api/**'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    paths:
+      - 'docs/api/**'
+      - '.github/workflows/docs.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  spectral:
+    name: openapi spectral lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Spectral on OpenAPI
+        uses: stoplightio/spectral-action@v0.8.13
+        with:
+          file_glob: 'docs/api/openapi.yaml'
+          # Use a local config if present, else the spectral:oas built-in ruleset
+          spectral_ruleset: 'docs/api/.spectral.yaml'

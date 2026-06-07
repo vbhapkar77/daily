@@ -24,22 +24,26 @@ Rather than downgrade to Java 21 to match the original ADR, the cleaner path is 
 
 ## Decision
 
-The project's backend targets **Java 25 LTS** instead of Java 21 LTS.
+The project uses **JDK 25 LTS as the runtime**, with **Java 21 as the source/target compilation level** in `pom.xml`. This is a common real-world pattern: runtime is the newest LTS, source level is the highest the framework officially supports.
 
 Concretely:
-- `pom.xml`: `<java.version>25</java.version>`, `<maven.compiler.source>25</maven.compiler.source>`, `<maven.compiler.target>25</maven.compiler.target>`
-- `Dockerfile`: `eclipse-temurin:25-jdk-alpine` (build stage), `eclipse-temurin:25-jre-alpine` (runtime stage)
-- GitHub Actions `setup-java@v4`: `java-version: '25'`, `distribution: 'temurin'`
+- **Local JDK installed:** Temurin 25.0.1 (LTS). Used for running `mvn`, IntelliJ, and the app.
+- **`pom.xml`:** `<java.version>21</java.version>`. Spring Boot 3.5.0 officially supports Java 17/21/24 — Java 25 wasn't released when 3.5 shipped. Spring Boot 3.6+ (releasing late 2025/early 2026) is expected to add official Java 25 support.
+- **Bytecode produced:** Java 21 (`--release 21`). Backward-compatible to run on JDK 25.
+- **`Dockerfile`:** `eclipse-temurin:25-jre-alpine` (runtime stage). Image size is roughly equivalent to JDK 21 images.
+- **GitHub Actions `setup-java@v4`:** `java-version: '25'`, `distribution: 'temurin'`.
+- **When to bump source level:** When Spring Boot 3.6+ officially supports Java 25, update `<java.version>` to 25 — this unlocks Java 22–25 language features (scoped values, stream gatherers, etc.). Until then, we get Java 21's full feature set (records, sealed classes, pattern matching, virtual threads) which covers ~95% of "modern Java" anyway.
 
 All other choices in ADR-0004 (Spring Boot 3, Maven, JPA, etc.) remain unchanged.
 
 ## Consequences
 
 ### Positive
-- **Two years more recent** than Java 21. Same LTS guarantees.
-- Access to features added between Java 22 and 25: scoped values, generational ZGC, stream gatherers, refined pattern matching, etc. These come up in modern senior interviews.
+- **Runtime is the latest LTS** — security patches and JIT improvements come with JDK 25.
+- **JIT improvements** (generational ZGC) benefit production performance even at Java 21 bytecode.
 - No need to install a second JDK on the machine; Vishal's existing JDK 25 install is what we use.
-- Matches "use the latest LTS" principle that the original ADR's rationale implied.
+- Matches "use the latest LTS" runtime principle while staying within Spring Boot's officially-supported source level (defensive choice).
+- When Spring Boot 3.6+ ships official Java 25 support, the bump is a one-line change in `pom.xml`.
 
 ### Negative
 - Some third-party libraries may not yet have explicit Java 25 support listed in their docs (even if they work). We'll watch for compatibility issues with: Testcontainers, Flyway, Spring Boot itself. All three confirm Java 25 support as of 2026-Q2.

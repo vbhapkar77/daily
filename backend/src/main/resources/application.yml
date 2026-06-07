@@ -1,0 +1,76 @@
+# Daily — Spring Boot configuration
+# This file holds the defaults; profile-specific overrides are in application-{profile}.yml
+# Run with -Dspring.profiles.active=local (or prod, etc.) to select a profile.
+
+spring:
+  application:
+    name: daily
+
+  # Per ADR-0005, JPA is configured to validate (not create/update) schemas — Flyway owns the DDL.
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        format_sql: true
+    show-sql: false
+
+  # Flyway migrations live in src/main/resources/db/migration/V_N__name.sql
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  # Don't expose Spring DevTools in non-dev runs
+  devtools:
+    add-properties: false
+
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# OpenAPI / Swagger UI configuration (per ADR-0010).
+# We keep api-docs enabled (required for the UI to function) but point the UI at our
+# hand-authored static spec at /openapi.yaml. The auto-generated /v3/api-docs exists
+# but is not the authority — see ADR-0010 §"contract-first API design".
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    # Point at our static, hand-authored spec (mounted in src/main/resources/static/openapi.yaml)
+    url: /openapi.yaml
+    operationsSorter: alpha
+    tagsSorter: alpha
+  api-docs:
+    enabled: true   # required for the UI; the generated spec is ignored
+
+# Spring Boot Actuator — expose health + info, nothing else by default
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  info:
+    git:
+      mode: simple
+
+# App-specific config (read by @ConfigurationProperties classes once we add them)
+app:
+  jwt:
+    # 32+ char secret — REQUIRED via env var in non-dev profiles
+    secret: ${JWT_SECRET:please-override-this-in-env-it-is-not-secure-for-prod-12345}
+    ttl: P30D   # 30 days, ISO 8601 duration
+  base-url: ${APP_BASE_URL:http://localhost:3000}
+  email:
+    # If empty in dev, password-reset emails are logged instead of sent
+    resend-api-key: ${RESEND_API_KEY:}
+    from: noreply@daily.example.com

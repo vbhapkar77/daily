@@ -1,0 +1,249 @@
+openapi: 3.1.0
+info:
+  title: Daily API
+  description: |
+    HTTP API for the Daily app — habit tracking and quick captures.
+
+    This is the **canonical contract** for the API. Backend controllers conform
+    to this spec; frontend TypeScript types are generated from it.
+
+    See [ADR-0010](../decisions/0010-adopt-sdd-practices.md) for the rationale
+    behind contract-first SDD.
+  version: 1.0.0-draft
+  contact:
+    name: Vishal Bhapkar
+    url: https://github.com/vbhapkar77/daily
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:8080
+    description: Local development
+  - url: https://daily-api.onrender.com
+    description: Production
+
+tags:
+  - name: Auth
+    description: Sign-up, sign-in, sign-out, password reset
+  - name: Habits
+    description: Habit CRUD and ordering
+  - name: Check-ins
+    description: Daily check-in operations
+  - name: Captures
+    description: Quick "don't forget" notes with reminders
+  - name: Health
+    description: Health and service info
+
+# All endpoints require auth (session cookie) unless explicitly noted with `security: []`
+security:
+  - sessionCookie: []
+
+paths:
+  /actuator/health:
+    get:
+      tags: [Health]
+      summary: Health check
+      description: Returns 200 if the service is up and the database is reachable.
+      operationId: health
+      security: []
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+        '503':
+          description: Service is unhealthy (DB unreachable or other critical issue)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+
+  /api/v1/auth/me:
+    get:
+      tags: [Auth]
+      summary: Get the current user
+      description: Returns information about the currently authenticated user.
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: The current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+# Schemas below are starting points; they'll be refined as we implement.
+# Per-feature specs add their endpoints + schemas via specs/NNN/api.yaml fragments.
+
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: session
+      description: |
+        Session is a signed JWT in an HttpOnly, Secure, SameSite=Lax cookie
+        named `session`. Issued by `/api/v1/auth/signup` and `/api/v1/auth/login`.
+        Lifetime: 30 days. See ADR-0001.
+
+  schemas:
+    Error:
+      type: object
+      description: Standard error envelope returned by all 4xx and 5xx responses.
+      required: [error, message]
+      properties:
+        error:
+          type: string
+          description: Machine-readable error code (kebab-case)
+          example: invalid-credentials
+        message:
+          type: string
+          description: Human-readable explanation (do not parse this)
+          example: Invalid email or password.
+        details:
+          type: object
+          description: Optional field-level validation errors keyed by field name
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            email: [must be a valid email]
+            password: [must be at least 8 characters]
+
+    HealthStatus:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [UP, DOWN]
+          example: UP
+        components:
+          type: object
+          additionalProperties:
+            type: object
+          example:
+            db: { status: UP }
+            diskSpace: { status: UP }
+
+    User:
+      type: object
+      description: A user account. Sensitive fields (password_hash, etc.) are never returned.
+      required: [id, email, timezone, createdAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 42
+        email:
+          type: string
+          format: email
+          example: vishal@example.com
+        name:
+          type: string
+          nullable: true
+          example: Vishal
+        timezone:
+          type: string
+          description: IANA timezone identifier
+          example: Asia/Kolkata
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-06-07T10:30:00Z'
+
+    Habit:
+      type: object
+      description: A daily habit a user tracks.
+      required: [id, name, sortOrder, archived, createdAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          maxLength: 50
+          example: Exercise
+        emoji:
+          type: string
+          maxLength: 8
+          nullable: true
+          example: 🏋️
+        sortOrder:
+          type: integer
+          minimum: 0
+        archived:
+          type: boolean
+          default: false
+        currentStreak:
+          type: integer
+          minimum: 0
+          description: Streak length after applying silent-grace rules. See ADR-0002.
+          example: 14
+        longestStreak:
+          type: integer
+          minimum: 0
+          example: 28
+        createdAt:
+          type: string
+          format: date-time
+
+    CheckIn:
+      type: object
+      description: A user's per-day record for a single habit.
+      required: [id, habitId, date, done, createdAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+        habitId:
+          type: integer
+          format: int64
+        date:
+          type: string
+          format: date
+          description: Date in the user's local timezone
+          example: '2026-06-07'
+        done:
+          type: boolean
+        note:
+          type: string
+          maxLength: 200
+          nullable: true
+          example: Trained legs — 4×8 squats
+        createdAt:
+          type: string
+          format: date-time
+
+    Capture:
+      type: object
+      description: A free-form one-line note the user wants to remember, optionally with a future reminder date.
+      required: [id, text, status, createdAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+        text:
+          type: string
+          maxLength: 280
+          example: Buy running shoes
+        remindAt:
+          type: string
+          format: date
+          nullable: true
+          description: Date the capture should be surfaced. Null = inbox only.
+        status:
+          type: string
+          enum: [open, done, dismissed]
+        createdAt:
+          type: string
+          format: date-time
