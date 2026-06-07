@@ -39,7 +39,7 @@
 		<jacoco.version>0.8.14</jacoco.version>
 		<spotless.version>2.43.0</spotless.version>
 		<!-- JWT library (added in S001 T-001 for auth feature) -->
-		<jjwt.version>0.12.6</jjwt.version>
+		<jjwt.version>0.13.0</jjwt.version>
 	</properties>
 	<dependencies>
 		<dependency>
