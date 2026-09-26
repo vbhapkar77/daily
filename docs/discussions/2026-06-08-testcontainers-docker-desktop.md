@@ -1,7 +1,26 @@
 # Discussion — Testcontainers vs Docker Desktop on macOS
 
 **Date:** 2026-06-07 (filed 2026-06-08)
-**Status:** Workaround pending; not blocking Phase 2
+**Status:** Local workaround verified on 2026-09-26
+
+## 2026-09-26 update: root cause and verified workaround
+
+The current Docker Desktop daemon uses Docker Engine 29.5.2. The project's
+Testcontainers 1.21.0 uses an older Docker API version by default, which the
+daemon rejects with HTTP 400. Docker itself and its Unix socket work normally.
+
+With Docker Desktop running, the auth migration integration test passed against
+Postgres 16 using docker-java's Maven system property:
+
+```bash
+cd backend
+./mvnw -B -Dapi.version=1.44 -Dtest=AuthMigrationTest test
+```
+
+Use `-Dapi.version=1.44` for local Testcontainers runs until the project updates
+Testcontainers. `DOCKER_API_VERSION=1.44` did not fix this Java client's error.
+The setting applies to the test process; it does not change Docker Desktop's
+configuration. Recheck it when upgrading Testcontainers or Docker.
 
 ## What happened
 
