@@ -44,12 +44,12 @@ These can ship in this order without breaking anything; the temporary permissive
   - Cover `findByEmail` with citext (case-insensitive lookups should work)
   - Estimate: 1 h
 
-- [ ] **T-004** `PasswordResetToken` entity + repository + repo tests
+- [x] **T-004** `PasswordResetToken` entity + repository + repo tests ✓ merged in PR #23
   - File(s): `.../auth/PasswordResetToken.java`, `.../auth/PasswordResetTokenRepository.java`, `.../auth/PasswordResetTokenRepositoryTest.java`
   - Cover `findByTokenHash`, expiry filtering, unused-only filter
   - Estimate: 1 h
 
-- [ ] **T-004b** `RateLimitEvent` entity + repository + repo tests
+- [x] **T-004b** `RateLimitEvent` entity + repository + repo tests ✓ merged in PR #23
   - File(s): `.../auth/RateLimitEvent.java`, `.../auth/RateLimitEventRepository.java`, `.../auth/RateLimitEventRepositoryTest.java`
   - Cover `countByBucketKeyAndOccurredAtAfter(key, since)` and `findEarliestInWindow(key, since)`
   - Refs: AC-6
