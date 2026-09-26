@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Status** | `not-started` (approved 2026-06-07, ready to start) |
+| **Status** | `in-progress` (backend persistence work underway) |
 | **Plan** | [./plan.md](./plan.md) |
 | **Spec** | [./spec.md](./spec.md) |
 
@@ -39,7 +39,7 @@ These can ship in this order without breaking anything; the temporary permissive
   - Refs: AC-1, AC-6
   - Estimate: 45 min
 
-- [ ] **T-003** `User` entity + `UserRepository` + repo tests
+- [x] **T-003** `User` entity + `UserRepository` + repo tests ✓ merged in PR #22
   - File(s): `.../user/User.java`, `.../user/UserRepository.java`, `.../user/UserRepositoryTest.java`
   - Cover `findByEmail` with citext (case-insensitive lookups should work)
   - Estimate: 1 h
