@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Spec 001 (Auth) — T-003:** `User` JPA entity and repository with Postgres tests for case-insensitive email lookup and uniqueness.
 - **Spec 001 (Auth) — T-002:** Flyway V2 creates users, password-reset tokens, and rate-limit events. A Postgres integration test verifies the schema and cascading deletes.
 - **Production hygiene:** Dependabot config (weekly Maven + npm + Actions updates), CodeQL SAST workflow, PR title Conventional Commits check, CODEOWNERS, issue templates (bug + feature), PR template, SECURITY.md vulnerability disclosure policy, CONTRIBUTING.md workflow guide, this CHANGELOG. README badges added.
 - **Spec 001 (Auth) — T-001:** JJWT 0.12.6 dependencies (`jjwt-api` @ compile, `jjwt-impl` and `jjwt-jackson` @ runtime). Learning note on Maven scopes + api/impl split pattern.

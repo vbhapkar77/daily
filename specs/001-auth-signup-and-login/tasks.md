@@ -32,7 +32,7 @@ These can ship in this order without breaking anything; the temporary permissive
   - Estimate: 20 min
   - 📝 Learning note: [docs/learnings/java/maven-dependencies.md](../../docs/learnings/java/maven-dependencies.md)
 
-- [ ] **T-002** Flyway migration V2 — users + password_reset_tokens + rate_limit_events
+- [x] **T-002** Flyway migration V2 — users + password_reset_tokens + rate_limit_events ✓ merged in PR #21
   - File: `backend/src/main/resources/db/migration/V2__create_users_and_password_reset_tokens.sql`
   - All 3 tables per spec §"Data model changes" (including `rate_limit_events`)
   - Add a smoke test: `@DataJpaTest` that confirms the tables exist after migration
