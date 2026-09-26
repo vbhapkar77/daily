@@ -115,3 +115,7 @@ Do **not** write a note when:
 ### Databases
 
 - [PostgreSQL `citext` with JPA parameters](databases/citext-and-jpa.md) *(S001 T-003)*
+
+### Auth
+
+- [Password hashes and reset-token hashes](auth/passwords-and-reset-tokens.md) *(S001 T-005–T-007)*

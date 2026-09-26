@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Spec 001 (Auth) — T-005–T-007:** bcrypt password hashing, SHA-256 reset-token hashing, and secure 32-byte token generation with unit tests.
 - **Spec 001 (Auth) — T-004/T-004b:** JPA models and repositories for password-reset tokens and rate-limit events, with Postgres integration tests.
 - **Spec 001 (Auth) — T-003:** `User` JPA entity and repository with Postgres tests for case-insensitive email lookup and uniqueness.
 - **Spec 001 (Auth) — T-002:** Flyway V2 creates users, password-reset tokens, and rate-limit events. A Postgres integration test verifies the schema and cascading deletes.
