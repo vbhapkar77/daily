@@ -111,3 +111,7 @@ Do **not** write a note when:
 ### Java
 
 - [Maven dependencies — scopes, BOMs, the api/impl split](java/maven-dependencies.md) *(S001 T-001)*
+
+### Databases
+
+- [PostgreSQL `citext` with JPA parameters](databases/citext-and-jpa.md) *(S001 T-003)*
